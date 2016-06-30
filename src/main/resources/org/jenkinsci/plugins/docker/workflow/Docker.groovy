@@ -72,9 +72,9 @@ class Docker implements Serializable {
         new Image(this, id)
     }
 
-    public Image build(String image, String dir = '.') {
+    public Image build(String image, String dir = '.', String options = '') {
         node {
-            script.sh "docker build -t ${image} ${dir}"
+            script.sh "docker build -t ${image} ${options} ${dir}"
             script.dockerFingerprintFrom dockerfile: "${dir}/Dockerfile", image: image, toolName: script.env.DOCKER_TOOL_NAME
             this.image(image)
         }
@@ -99,7 +99,7 @@ class Docker implements Serializable {
         public String imageName() {
             return toQualifiedImageName(id)
         }
-        
+
         public <V> V inside(String args = '', Closure<V> body) {
             docker.node {
                 try {
